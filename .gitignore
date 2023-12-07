@@ -1,0 +1,43 @@
+# temp files
+.ipynb_checkpoints
+__pycache__
+.DS_Store
+*~
+
+# venv
+*_env
+
+
+# data of all sorts
+*data
+images
+P6/zip_files
+#P7/sample_data
+#P7/project_files
+#P7/RFmodel
+#P7/A\ faire.txt
+#P7/files
+
+# app
+Flask
+dash
+
+# courses
+cours_calculs_distribues_donnees_massives
+
+
+P7/custom_pca_functions.py
+P7/sample_data_archive
+
+# pickle files
+*.pkl
+
+# misc
+credentials
+output
+awskeys
+.awskeys
+logs
+support_pres
+temp_path
+archive
