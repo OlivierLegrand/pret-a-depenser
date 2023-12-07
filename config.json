@@ -1,6 +1,6 @@
 {
 "WRITE":"data/sample_data/",
 "READ":"data/project_files/",
-"NUM_ROWS":10000
+"NUM_ROWS":10000,
+"URL":"https://s3-eu-west-1.amazonaws.com/static.oc-static.com/prod/courses/files/Parcours_data_scientist/Projet+-+Impl%C3%A9menter+un+mod%C3%A8le+de+scoring/Projet+Mise+en+prod+-+home-credit-default-risk.zip"
 }
-

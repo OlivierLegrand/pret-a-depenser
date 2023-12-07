@@ -8,11 +8,16 @@ import pickle
 import json
 import logging
 import sys
+import pathlib
+from typing import List
+import shutil
+import os
 
 # third party
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import requests
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score
@@ -43,8 +48,7 @@ ch.setFormatter(formatter)
 # add ch to logger
 logger.addHandler(ch)
 
-# ----------------------------------------------------------------
-
+# ---------------- read config files ---------------------------------
 with open('config.json', 'r') as f:
     config = json.load(f)
 NUM_ROWS = config['NUM_ROWS']
@@ -54,11 +58,54 @@ FP_WRITE = config['WRITE']
 with open('model_params.json', 'r') as f:
     model_params = json.load(f)
     
+# --------- creating the folders if necessary -----------------------
+logger.info('Initialization')
+path = pathlib.Path(FP_READ).resolve()
+
+try:
+    logger.info(f'Creating new directory {path.parent}')
+    path.parent.mkdir()
+except FileExistsError:
+    logger.info(f'Directory {path.parent} already exists')
+    pass
+
+for fp in [FP_READ, FP_WRITE]:
+    try:
+        logger.info(f'Creating new directory {fp}')
+        pathlib.Path(fp).mkdir()
+    except FileExistsError:
+        logger.info(f'Directory {fp} already exists')
+        pass
+
+# ---------- download and unzip files if necessary -------------------
+dirs = os.listdir(FP_READ)
+if not dirs:
+    # downloading the data zipfile
+    logger.info("Downloading the data zip file")
+    url = config['URL']
+    req = requests.get(url)
+
+    # writing file to disk
+    logger.info("Writing file to disk")
+    filename = url.split('/')[-1]
+    path = os.path.join(FP_READ, filename)
+    with open(path, 'wb') as f:
+        f.write(req.content)
+
+    # unzip
+    logger.info('unzipping the file')
+    extract_dir = FP_READ
+    shutil.unpack_archive(path, extract_dir)
+else:
+    logger.info(f'Directory {FP_READ} not empty.')
+# -------------------------------------------------------------------
+
 @contextmanager
 def timer(title):
     t0 = time.time()
     yield
     logger.info("{} - done in {:.0f}s".format(title, time.time() - t0))
+
 
 
 def drop_cols(df:pd.DataFrame,
@@ -179,16 +226,14 @@ def create_datasets(load_from_existing:bool=True,
 
     """
     
-    if load_from_existing:
+    #if load_from_existing:
+    #    logger.info('Load from existing')
+    try:
         logger.info('Load from existing')
-        try:
-            cleaned_df = pd.read_csv(FP_READ + 'data.csv')
-        except Exception as e:
-            logger.info("No dataset found! Try setting load_from_existing to False, or check the filepath is correct.")
-            raise e
+        cleaned_df = pd.read_csv(FP_READ + 'data.csv')
 
-    else:
-        logger.info('Recreate dataset')
+    except FileNotFoundError as e:
+        logger.info("No dataset found! Recreating dataset.")
         # création du dataset complet
         df = lgbmsf.join_df(num_rows=num_rows)
 
@@ -200,6 +245,7 @@ def create_datasets(load_from_existing:bool=True,
             # enregistre sample_data pour utilisation dans le dashboard 
             with timer('Saving cleaned dataset to {}...'.format(FP_READ + 'data.csv')):
                 cleaned_df.to_csv(FP_READ + 'data.csv', index_label=False)
+        
     
     # vérification de l'indexation du jeu de données
     assert 'SK_ID_CURR' in cleaned_df.columns
@@ -430,7 +476,7 @@ def main(num_rows=10000,
     # Récupération des clients présents dans le jeu de test
     logger.info('Select data for the dashboard')
     ids = X_test.SK_ID_CURR.unique()
-    prepare_for_dashboard(ids, config=config)
+    prepare_for_dashboard(ids)
     
     logger.info('Training model...')
     model = run_model(X_train, X_test, y_train, y_test)

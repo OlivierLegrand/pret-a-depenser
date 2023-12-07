@@ -28,6 +28,8 @@ cours_calculs_distribues_donnees_massives
 
 P7/custom_pca_functions.py
 P7/sample_data_archive
+LightGBM_préparatoire.ipynb
+
 
 # pickle files
 *.pkl
