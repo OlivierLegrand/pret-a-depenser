@@ -31,30 +31,62 @@ Michaël vous a fourni des spécifications pour le dashboard interactif. Celui-c
 
 # II Comment utiliser ce répertoire
 
-Le répertoire contient le code nécessaire à l'entraînement du modèle, la création de l'API et du dashboard interactif. Le script `create_model.py` s'occupe du téléchargement des données, de créer les dossiers nécessaires et d'y placer les données téléchargées et celles générées lors de la création et de l'entraînement du modèle:
+Le répertoire doit en principe contenir les fichiers suivants:
+- Le notebook contenant l'analyse exploratoire, l'entraînement du modèle et les essais d'interprétation du modèle
+- les fichiers lightgbm_with_simple_features.py et create_model.py renfermant les scripts nécessaires au fonctionnement du modèle et des applications
+- les dossiers prediction_app et dashboard_app contenant les fichiers nécessaires au déploiement des applications en local ou sur le web
+
+La première étape consiste à lancer l'execution du script create_model.pyl:
 
 	python create_model.py 
 
-`root
-  |
-  |----data
-  		 |
-  		 |--project_files
-  		 |
-  		 |--sample_data`
+L'execution du script va créer le dossier sample_data et y placer les fichiers csv des données, le modèle entraîné et enregistré au format pickle (lgb.pkl), ainsi que les fichiers contenant les données utiles pour l'interprétation du modèle (shap_values.pkl et base_value.pkl). Il crée également le dossier project_files dans lequel les données téléchargées et le jeu de données créer pour l'entraînement du modèle sont placés. 
 
-Les extraits des données utilisés pour la dashboard, le modèle entraîné ainsi que les shap values calculées sont placés dans le dossier sample_data. Le dossier project_files contient les données téléchargées, et le jeu de données complet pour réaliser l'entraînement du modèle.
+Après execution du script create_model.py, le repertoire doit donc ressembler à ça:
+```
+.
+└── root  /
+    ├── .git
+    ├── .gitignore
+    ├── HomeCredit_columns_description.csv
+    ├── LightGBMClassifier_final.ipynb
+    ├── README.md
+    ├── config.json
+    ├── create_model.py
+    ├── lightgbm_with_simple_features.py
+    ├── model_params.json
+    ├── requirements.txt
+    ├── data/
+    │   ├── project_files/
+    │   │   ├── data.csv
+    │   │   └── ...
+    │   └── sample_data/
+    │       ├── base_value.pkl
+    │       ├── features_test.csv
+    │       ├── lgb.pkl
+    │       ├── shap_values.pkl
+    │       └── ...
+    ├── dashboard_app/
+    │   ├── Procfile
+    │   ├── config.json
+    │   ├── home_credit.py
+    │   ├── requirements.txt
+    │   └── runtime.txt
+    └── prediction_app/
+        ├── Model.py
+        ├── Procfile
+        ├── app.py
+        ├── config.json
+        ├── requirements.txt
+        └── runtime.txt
+```
 
 Le code est largement inspiré du kernel kaggle disponible à cette adresse: https://www.kaggle.com/c/home-credit-default-risk/data\
 L'algorithme de prédiction utilisé est LightGBM https://lightgbm.readthedocs.io/
 
 # II Comment utiliser ce répertoire
 ## II.1 Contenu du répertoire
-Après applications des étapes décrites précédemment, le répertoire doit en principe contenir les fichiers suivants:
-- Le notebook contenant l'analyse exploratoire, l'entraînement du modèle et les essais d'interprétation du modèle
-- les fichiers lightgbm_with_simple_features.py et p7.py renfermant les scripts nécessaires au fonctionnement du modèle et des applications
-- les dossiers prediction_app et dashboard_app contenant les fichiers nécessaires au déploiement des applications en local ou sur le web
-- le dossier sample_data contenant les fichiers csv des données, le modèle entraîné et enregistré au format pickle (lgb.pkl), et les fichiers contenant les données utiles pour l'interprétation du modèle (shap_values.pkl et base_value.pkl)
+
 
 ## II.2 Procédures pour lancer les applications en local
 
