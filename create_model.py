@@ -28,6 +28,7 @@ import shap
 # custom
 import lightgbm_with_simple_features as lgbmsf
 
+
 #------------------ Logging --------------------------------------
 logger = logging.getLogger(__name__)
 logger.setLevel('DEBUG')
@@ -226,8 +227,6 @@ def create_datasets(load_from_existing:bool=True,
 
     """
     
-    #if load_from_existing:
-    #    logger.info('Load from existing')
     try:
         logger.info('Load from existing')
         cleaned_df = pd.read_csv(FP_READ + 'data.csv')

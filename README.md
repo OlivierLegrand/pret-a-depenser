@@ -1,44 +1,49 @@
-# Projet 7: Implémentez un algorithme de scoring
+# Prêt à dépenser
 
-# I Préparation des fichiers pour l'utilisation du répertoire
-Pour utiliser les notebooks et les applications inclus dans ce répertoire, les fichiers de données originaux, le modèle ainsi que les échantillons utilisés par les applications doivent être récupérés et/ou générés manuellement. Pour cela, se placer à la racine du répertoire et récupérer les fichiers originaux:
+Il s'agit du 7ème projet de la certification Data Scientist dispensée par OpenClassrooms (sur les huit projets au total). Dans ce projet on cherche à mettre en place un algorithme de scoring visant à prédire la probabilité qu'un client fasse faillite, puis à présenter les résultats et leur interprétation sous la forme d'un dashboard interactif.  
 
-	
-	cd <repertoire>
-	mkdir data
-	curl -O https://s3-eu-west-1.amazonaws.com/static.oc-static.com/prod/courses/files/Parcours_data_scientist/Projet+-+Impl%C3%A9menter+un+mod%C3%A8le+de+scoring/Projet+Mise+en+prod+-+home-credit-default-risk.zip
-	unzip Projet+Mise+en+prod+-+home-credit-default-risk.zip -d data/project_files
 
-Vérifier que le fichier config.json est configuré de la manière suivante et le corriger si ce n'est pas le cas:
-	
-	{ 
-		"WRITE":"data/sample_data",
-		"READ":"data/project_files",
-		"NUM_ROWS":10000
-	}	
+# I Présentation du projet
 
-Créer le répertoire sample_data:
+Vous êtes Data Scientist au sein d'une société financière, nommée "Prêt à dépenser",  qui propose des crédits à la consommation pour des personnes ayant peu ou pas du tout d'historique de prêt.
 
-	cd <repertoire>/data
-	mkdir sample_data
+L’entreprise souhaite mettre en œuvre un outil de “scoring crédit” pour calculer la probabilité qu’un client rembourse son crédit, puis classifie la demande en crédit accordé ou refusé. Elle souhaite donc développer un algorithme de classification en s’appuyant sur des sources de données variées (données comportementales, données provenant d'autres institutions financières, etc.).
 
-Attention, le nom du dossier dans lequel les fichiers téléchargés ont été placés et la valeur du champ "READ" du fichier de config.json doivent coïncider.
+De plus, les chargés de relation client ont fait remonter le fait que les clients sont de plus en plus demandeurs de transparence vis-à-vis des décisions d’octroi de crédit. Cette demande de transparence des clients va tout à fait dans le sens des valeurs que l’entreprise veut incarner.
 
-Se placer à la racine du répertoire, ouvrir un terminal et commencer par créer un environnement virtuel:
+Prêt à dépenser décide donc de développer un dashboard interactif pour que les chargés de relation client puissent à la fois expliquer de façon la plus transparente possible les décisions d’octroi de crédit, mais également permettre à leurs clients de disposer de leurs informations personnelles et de les explorer facilement.
 
-	cd <repertoire>
-	pip -m venv venv
-	source venv/bin/activate
+### Votre mission
+1. Construire un modèle de scoring qui donnera une prédiction sur la probabilité de faillite d'un client de façon automatique.
+2. Construire un dashboard interactif à destination des gestionnaires de la relation client permettant d'interpréter les prédictions faites par le modèle, et d’améliorer la connaissance client des chargés de relation client.
 
-puis procéder à l'installation des packages requis:
+Michaël, votre manager, vous incite à sélectionner un kernel Kaggle pour vous faciliter la préparation des données nécessaires à l’élaboration du modèle de scoring. Vous analyserez ce kernel et l’adapterez pour vous assurer qu’il répond aux besoins de votre mission.
 
-	pip install -r requirements.txt
+Vous pourrez ainsi vous focaliser sur l’élaboration du modèle, son optimisation et sa compréhension.
 
-Lancer le script create_model.py:
-	
+### Spécifications du dashboard
+Michaël vous a fourni des spécifications pour le dashboard interactif. Celui-ci devra contenir au minimum les fonctionnalités suivantes :
+
+* Permettre de visualiser le score et l’interprétation de ce score pour chaque client de façon intelligible pour une personne non experte en data science.
+* Permettre de visualiser des informations descriptives relatives à un client (via un système de filtre).
+* Permettre de comparer les informations descriptives relatives à un client à l’ensemble des clients ou à un groupe de clients similaires.
+
+
+# II Comment utiliser ce répertoire
+
+Le répertoire contient le code nécessaire à l'entraînement du modèle, la création de l'API et du dashboard interactif. Le script `create_model.py` s'occupe du téléchargement des données, de créer les dossiers nécessaires et d'y placer les données téléchargées et celles générées lors de la création et de l'entraînement du modèle:
+
 	python create_model.py 
 
-Le script va générer automatiquement les fichiers de données nécessaires pour l'entraînement du modèle, entraîne le modèle et calcule les valeurs shap nécessaires à l'interprétation du modèle. Ces fichiers sont placés dans un répertoire nommé sample_data.
+`root
+  |
+  |----data
+  		 |
+  		 |--project_files
+  		 |
+  		 |--sample_data`
+
+Les extraits des données utilisés pour la dashboard, le modèle entraîné ainsi que les shap values calculées sont placés dans le dossier sample_data. Le dossier project_files contient les données téléchargées, et le jeu de données complet pour réaliser l'entraînement du modèle.
 
 Le code est largement inspiré du kernel kaggle disponible à cette adresse: https://www.kaggle.com/c/home-credit-default-risk/data\
 L'algorithme de prédiction utilisé est LightGBM https://lightgbm.readthedocs.io/
@@ -62,25 +67,6 @@ Ceci lancera l'API de prédiction. Il est nécessaire de lancer l'API de prédic
 
 	cd dashboard_app	
 	python home_credit.py
-
-## II.3 Procédures pour déployer les applications sur le web
-Les applications peuvent être déployées sur le web via heroku. Les fichiers nécessaires au déploiement (Procfile, requirements.txt, runtime.txt) sont déjà présents et configurés dans les dossiers des applications. Pour effectuer le déploiement, copier le répertoire de l'application à déployer à l'emplacement de votre choix, y placer une copie du dossier sample_data généré précedemment
-
-	cp -r data/sample_data /chemin/vers/le/repertoire/de/l'application
-
-ou le créer si ce n'est pas le cas:
-
-	cd <repertoire>
-	python p7.py
-	cp -r data/sample_data /chemin/vers/le/repertoire/de/l'application
-
-Il faut modifier le fichier config.json ainsi:
-
-	{
-		"PATH":"sample_data/"
-	}
-
-Pour déployer l'application, suivre les instructions données à cette adresse: https://devcenter.heroku.com/articles/git
 
 
 # III Prédiction de la capacité de remboursement d'emprunt des clients de Home Credit
