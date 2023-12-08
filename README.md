@@ -30,13 +30,14 @@ Michaël vous a fourni des spécifications pour le dashboard interactif. Celui-c
 
 
 # II Comment utiliser ce répertoire
+## II.1 Initialisation et contenu du répertoire
 
 Le répertoire doit en principe contenir les fichiers suivants:
 - Le notebook contenant l'analyse exploratoire, l'entraînement du modèle et les essais d'interprétation du modèle
 - les fichiers lightgbm_with_simple_features.py et create_model.py renfermant les scripts nécessaires au fonctionnement du modèle et des applications
-- les dossiers prediction_app et dashboard_app contenant les fichiers nécessaires au déploiement des applications en local ou sur le web
+- les dossiers prediction-api et dashboard-app contenant les fichiers nécessaires au déploiement des applications en local (le déploiement sur le web n'est plus disponible)
 
-La première étape consiste à lancer l'execution du script create_model.pyl:
+La première étape consiste à lancer l'execution du script create_model.py:
 
 	python create_model.py 
 
@@ -66,13 +67,13 @@ Après execution du script create_model.py, le repertoire doit donc ressembler �
     │       ├── lgb.pkl
     │       ├── shap_values.pkl
     │       └── ...
-    ├── dashboard_app/
+    ├── dashboard-app/
     │   ├── Procfile
     │   ├── config.json
     │   ├── home_credit.py
     │   ├── requirements.txt
     │   └── runtime.txt
-    └── prediction_app/
+    └── prediction-api/
         ├── Model.py
         ├── Procfile
         ├── app.py
@@ -84,20 +85,16 @@ Après execution du script create_model.py, le repertoire doit donc ressembler �
 Le code est largement inspiré du kernel kaggle disponible à cette adresse: https://www.kaggle.com/c/home-credit-default-risk/data\
 L'algorithme de prédiction utilisé est LightGBM https://lightgbm.readthedocs.io/
 
-# II Comment utiliser ce répertoire
-## II.1 Contenu du répertoire
-
-
 ## II.2 Procédures pour lancer les applications en local
 
 L'application peut maintenant être lancée:
 
-	cd prediction_app
+	cd prediction-api
 	python app.py
 
 Ceci lancera l'API de prédiction. Il est nécessaire de lancer l'API de prédiction d'abord car elle est ensuite appelée par l'application dashboard. Pour lancer l'application dashboard, se replacer à la racine, puis:
 
-	cd dashboard_app	
+	cd dashboard-app
 	python home_credit.py
 
 
